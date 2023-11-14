@@ -23,24 +23,21 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
+      run: ./gradlew assembleRelease
+
+    - name: 打包应用程序
       run: |
-        echo 'android.native.buildOutput=verbose' >> gradle.properties
-        ./gradlew assemble
-    - name: dir
-      run: |
-        dir /s
+        find . -name '*.apk' | xargs zip -r app.zip
+      working-directory: ./
+
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: apk
-        path: build/outputs/apk/*.apk
-    - name: Upload Debug artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: debug
-        path: build/outputs/apk/debug/*.apk
+        name: app
+        path: app.zip
+
     - name: Upload release artifact
       uses: actions/upload-artifact@v3
       with:
         name: release
-        path: build/outputs/apk/release/*.apk
+        path: app/build/outputs/apk/foss/release/*.apk
